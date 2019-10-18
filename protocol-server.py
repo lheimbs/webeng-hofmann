@@ -1,9 +1,9 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import socket
 
 HOST = socket.gethostname()
-PORT = 60000
+PORT = 60001
 
 SOCKET = socket.socket()
 
@@ -13,10 +13,17 @@ try:
 
     while True:
         conn, addr = SOCKET.accept()
-        msg = conn.recv(1024)
-        upper_msg = msg.decode("utf-8").upper()
-        print(upper_msg)
-        conn.send(upper_msg.encode("utf-8"))
+        print(f"Client {addr[0]} connected at port {addr[1]}.")
+        while True:
+            #print("Running...")
+            msg = conn.recv(1024)
+            msg = msg.decode("utf-8")
+            upper_msg = msg.upper()
+            if msg and msg == "STOP":
+                break
+            else:
+                conn.send(upper_msg.encode("utf-8"))
         conn.close()
+        print("Client disconnected. Waiting for new client")
 finally:
     SOCKET.close()

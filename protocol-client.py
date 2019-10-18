@@ -1,24 +1,36 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket
 
 HOST = socket.gethostname()
-PORT = 60000
+PORT = 60001
 
 SOCKET = socket.socket()
 
-msg = input("Your Message: ")
+try:
+    SOCKET.connect((HOST, PORT))
+    msg = ""
 
-SOCKET.connect((HOST, PORT))
-SOCKET.send(msg.encode("utf-8"))
+    while True:
+        msg = input("Your Message: ")
+        msg = msg.strip()
+        SOCKET.send(msg.encode("utf-8"))
 
-recv_msg = ""
-while True:
-    data = SOCKET.recv(16)
-    if data:
-        recv_msg += data.decode("utf-8")
-    else:
-        break
-print(recv_msg)
+        if msg == "STOP":
+            break
+            
 
-SOCKET.close()
+        """while True:
+            data = SOCKET.recv(16)
+            print(data)
+            if data:
+                recv_msg += data.decode("utf-8")
+            else:
+                break"""
+
+        data = SOCKET.recv(1024)
+        print(data.decode("utf-8"))
+
+    SOCKET.close()
+finally:
+    SOCKET.close()
